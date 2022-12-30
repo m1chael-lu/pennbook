@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Articles</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+		integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+		integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="/scripts/homepage.js"></script>
+	<link rel="stylesheet" href="/styles/homepage.css" type="text/css">
+</head>
+
+<script language="javascript" type="text/javascript" src="../js/homepage/homepage.js"></script>
+<script language="javascript" type="text/javascript" src="../js/homepage/homepageRefresh.js"></script>
+<script language="javascript" type="text/javascript" src="../js/homepage/homepageModal.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+	var refreshRate = 3000;
+	var localposts = [];
+	var localFriends = []
+	var socket = io();
+	var visibleChatRequestsOthers = [];
+	var visibleChatWindows = [];
+	$(document).ready(function () {
+		refresh();
+
+		// Defining Jquery Operations
+		$("#add-friend-button").on("click", function () {
+			var friendName = document.getElementById('friendinput').value;
+			$.post('/addFriend', { friend: friendName, add: true }, function (data) {
+				if (data.success) {
+					var table = document.getElementById("friendslist");
+					var row = table.insertRow(-1);
+					row.id = friendName + " row";
+					row.style.height = "20px";
+					var cell = row.insertCell(-1);
+					cell.className = "friend";
+					cell.innerHTML = "<td> <div class='d-flex'> <div class='mx-auto'> <div class='rounded-circle bg-secondary indicator-circle'" +
+						" style='width:10px; height: 10px;' id='" + friendName + " indicator'> </div> </div> </div>" +
+						" <div class='text-left' style='color:grey'>" +
+						friendName + "</div> </td>";
+					var cell2 = row.insertCell(-1);
+					cell2.style.width= "130px";
+					cell2.innerHTML = 
+							"<div style='display: inline-block;overflow-inline: hidden;'> " +
+								" <button class='btn btn-secondary btn-sm text-right' style='margin-inline-end: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;' " +
+									" onclick='openFriend(\"" + friendName + "\")'> " +
+									"<span class='fa fa-comments'></span> " +
+								"</button>" +
+								"<button type='button' class='btn btn-secondary btn-sm' style='float:right; background: white; color: grey; border-bottom-left-radius: 0; " +
+									"border-top-left-radius: 0;' " +
+									"onclick='unfriend(\"" + friendName + "\")'>Unfriend" + 
+								"</button>" +
+							"</div>";
+				} else {
+				}
+				document.getElementById('friendinput').value = "";
+			})
+		});
+		$('#wall-button').on("click", function() {
+			var friendName = document.getElementById('friendinput').value;
+			makeWall(friendName);
+			document.getElementById("friendinput").value = "";
+		})
+	});
+
+	// Creating global variables
+	var chatRequests = new Map();
+	var listeners = new Map();
+	var currModal;
+	var currUser = <%- JSON.stringify(user) %>;
+
+
+	// Creating helper functions
+	function fillSearchBar(text) {
+		var searchbar = document.getElementById("friendinput");
+		searchbar.value = text;
+	}
+
+	// Dropdown functionality
+	function openDropdown() {
+		currKeyword = document.getElementById("friendinput").value;
+		showDropdown = true;
+		var dropdown = document.getElementById("dropdown");
+		dropdown.innerHTML = "<p></p>";
+		$.post('/retrievedropdownitems', { keyword: currKeyword }, function (data) {
+			for (var i = 0; i < data.users.length; i++) {
+				var textOfDropdown = data.users[i].login_name.S;
+				dropdown.innerHTML += "<p class='dropdown-item' style='width: 203px; text-align: " +
+					"left; background: white; margin: 0px; border: solid 1px #d7dee2; opacity: 0.8' onclick='fillSearchBar(\"" +
+					textOfDropdown + "\")'>" + textOfDropdown + "</p>";
+			}
+		})
+	}
+
+	function closeDropdown() {
+		showDropdown = false;
+		var dropdown = document.getElementById("dropdown");
+		dropdown.innerHTML = "";
+	}
+
+	// Message functionality
+	function addMessage(chatid, user, message) {
+		var table = document.getElementById(chatid + " table");
+		var row = table.insertRow(-1);
+		row.style.height = "15px";
+		var cell = row.insertCell(0);
+		cell.className = "friend";
+		if (user) {
+			cell.innerHTML = "<td><b style='margin-right:5px'>" + user + ": </b>" + message + " </td>";
+		} else {
+			cell.innerHTML = "<td><b>" + message + "</b></td>";
+		}
+	}
+
+	function collectChat(chatid) {
+		var inputField = document.getElementById(chatid + " input");
+		var text = inputField.value;
+		addMessage(chatid, currUser, text);
+		inputField.value = "";
+		socket.emit('send', {room: chatid, message: text, user: currUser});
+	}
+
+	// AJAX calls
+	function unfriend(user) {
+		$.post("/unfriend", { username: user }, function (data) {
+			var friendRow = document.getElementById(user + " row");
+			friendRow.remove();
+		})
+	}
+
+	function createPost(title, description) {
+		return $.post("/createpost", { title: title, description: description }, function (data) {
+			return data.success;
+		})
+	}
+
+	// Comment function
+	function comment(id, timestamp) {
+		var commentmessage = document.getElementById(id + " commentbox").value;
+		var commentContainer = document.getElementById(id + " comments");
+		var newCommentElement = document.createElement("div");
+		newCommentElement.className = "comment";
+		newCommentElement.innerHTML = "<p class='mb-0'>" + currUser + ": " + commentmessage + "</p>";
+		commentContainer.appendChild(newCommentElement);
+		
+		document.getElementById(id + " commentbox").value = "";
+
+		return $.post("/createcomment", { postid: id, timestamp: timestamp, comment: commentmessage }, function (data) {
+			if (data.success) {
+				return true;
+			} else {
+			}
+		});
+	}
+
+</script>
+
+<body>
+	<nav class="navbar">
+		<form class="form-inline" style="position: absolute; top: 12px; left: 15px" id="add-friend-form" method="post" action="action.php">
+			<div class="input-group">
+				<input type="text" id="friendinput" class="form-control" oninput="openDropdown()"
+					placeholder="Search for friends">
+				<div class="input-group-append">
+					<button type="button" id="wall-button" class="btn btn-outline-secondary" style="background-color: rgb(220, 239, 255); opacity: 0.7">
+						<i class="fa fa-search"></i>
+					</button>
+					<button type="button" id="add-friend-button" class="btn btn-outline-secondary" style="background-color: rgb(220, 239, 255); opacity: 0.7">
+						<i class="fa fa-plus"></i>
+					</button>
+				</div>
+			</div>
+			<div id="dropdown"></div>
+		</form>
+		<h1 style="text-align: center" id="header">
+			<a id="button2" href="/accountsettings">Account Settings</a>
+			<div style="position: absolute; left: 42%; top: 15%">
+				HOME PAGE
+			</div>
+			<a id="button" href="/logout">Logout</a>
+		</h1>
+	</nav>
+	<header style="padding: 0px; background: #E6F4FF">
+	<div class="one section">
+		<% if (friends != null) {%>
+		<table class="table align-top" id="friendslist">
+			<thead>
+				<tr>
+					<th class="text-left" colspan="2" style="color: black">Friends</th>
+					
+					<a href="/visualizer">
+						<button type="button" id="friend-visualizer" class="btn btn-sm btn-outline-secondary" style="background-color: rgb(220, 239, 255); opacity: 0.7; position: absolute; right: 74.2%; top: 80px">
+							Visualizer
+						</button>
+					</a>
+				</tr>
+			</thead>
+			<% if (friends.user_2 != null) {%>
+			<tbody>
+				<% for (var i=0; i < friends.user_2.SS.length; i++) {%>
+				<tr style="height: 20px" id="<%= friends.user_2.SS[i] + ' row' %>">
+					<td class="friend" >
+						<div class="d-flex">
+							<div class="mx-auto">
+								<div class="rounded-circle bg-secondary indicator-circle"
+									style="width: 10px; height: 10px;" id="<%= friends.user_2.SS[i] + ' indicator' %>">
+								</div>
+							</div>
+						</div>
+						<div class='text-left' style="color: grey">
+							<%= friends.user_2.SS[i] %>
+						</div>
+					<td style="width:130px">
+						<div style="display: inline-block;overflow-inline: hidden;">
+							<button class="btn btn-secondary btn-sm text-right" style="margin-inline-end: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;"
+								onclick='openFriend(<%= JSON.stringify(friends.user_2.SS[i]) %>)'>
+								<span class="fa fa-comments"></span>
+							</button>
+							<button type="button" class="btn btn-secondary btn-sm" style="float:right; background: white; color: grey; border-bottom-left-radius: 0; 
+								border-top-left-radius: 0;" onclick='unfriend(<%= JSON.stringify(friends.user_2.SS[i]) %>)'>Unfriend
+							</button>
+						</div>
+					</td>
+					</td>
+				</tr>
+				<% }; %>
+			</tbody>
+			<% }; %>
+		</table>
+		<% }; %>
+	</div>
+	<div class="two section">
+        <table class="table align-top" id="postslist" style='height: 300px; overflow-y:auto'>
+            <thead>
+                <tr>
+                    <th class="text-left" style="color: black"> Posts
+						<button type="button" id="add-post-button" class="btn btn-sm btn-outline-secondary" style="background-color: rgb(220, 239, 255); opacity: 0.7; position: absolute; right: 30%; top: 80px" onclick="openPost()">
+							<i class="fa fa-plus"></i>
+						</button>
+					</th>
+                </tr>
+            </thead>
+            <tbody>
+				<% if (posts != null) {%>
+                    <% for (var i=0; i < posts.length; i++) {%>
+                        <tr style="height: 20px" id="<%= posts[i].postid + ' post' %>">
+                            <td class="post">
+								<div class="card mt-3">
+									<div class="card-body">
+										<h5 class="card-title"><%= posts[i].title.S %></h5>
+										<p class="card-text"><%= posts[i].description.S %>
+											<div style="position:absolute; right: 20px; top: 56px; color: rgb(157, 157, 157); text-transform: capitalize;"> <%= posts[i].author.S %> </div>
+										</p>
+									</div>
+									<div style="position: absolute; right:12px; top:21px; color: lightgrey">
+										<%= posts[i].timestamp.N %>
+									</div>
+									<div class="card-footer">
+									  <h6>Comments</h6>
+									  <div class="comments-container" id="<%= posts[i].postid.S + ' comments'%>" %> style="min-height: 100px; overflow-y: scroll;">
+										<% if (posts[i].comments != null) {%>
+											<% for (var comment of posts[i].comments.SS) {%>
+												<% if (comment.length > 0) { %>
+													<div class="comment">
+													<p class="mb-0"> <%= comment %> </p>
+												</div>
+												<% } %>
+											<% } %>
+										<% } %>
+									  </div>
+									  <div class="input-group mt-3">
+										<input type="text" id="<%= posts[i].postid.S + ' commentbox' %>" class="form-control" placeholder="Add a comment..." aria-label="Comment" aria-describedby="button-addon2">
+										<div class="input-group-append">
+											<button class="btn btn-outline-secondary" type="button" id="button-addon2" 
+											onclick="comment('<%= posts[i].postid.S %>', '<%= posts[i].timestamp.N %>')">
+											Post Comment</button>
+										</div>
+									  </div>
+									</div>
+								  </div>
+                            </td>
+                        </tr>
+                    <% } %>
+				<% }; %>
+            </tbody>
+        </table>
+	</div>
+
+	<div class="three section">
+		<table class="table align-top" id="newslist" style='height: 300px; overflow-y:auto'>
+            <thead>
+                <tr>
+                    <th class="text-left" style="color: black"> News
+					</th>
+                </tr>
+            </thead>
+            <tbody>
+				<% if (news != null) {%>
+                    <% for (var i=0; i < news.length; i++) {%>
+                        <tr style="height: 20px" id="<%= news[i].url + ' news' %>">
+                            <td class="news">
+								<div class="card mt-3">
+									<div class="card-body">
+										<h5 class="card-title"><%= news[i].headline.S %></h5>
+										<p class="card-text"><%= news[i].description.S %>
+											<div style="position:absolute; right: 20px; top: 56px; color: rgb(157, 157, 157); text-transform: capitalize;"> <%= news[i].authors.S %> </div>
+										</p>
+										<p class="card-text"> <a href=<%= news[i].url.S%>>Link to Article</a>
+											<div style="position:absolute; right: 20px; top: 56px; color: rgb(157, 157, 157); text-transform: capitalize;"> <%= news[i].authors.S %> </div>
+										</p>
+									</div>
+									<div style="position: absolute; right:12px; top:42px; color: lightgrey">
+										<%= news[i].date.S %>
+									</div>
+									<div class="card-footer">
+										<div class="input-group mt-3">
+										<div class="input-group-append">
+											<button class="btn btn-outline-secondary" type="button" id="button-addon2" style="border-radius:5px" onclick=''>Like</button>
+										</div>
+										</div>
+									</div>
+								  </div>
+                            </td>
+                        </tr>
+                    <% } %>
+				<% }; %>
+            </tbody>
+        </table>
+
+		<%if (message !=null) { %>
+			<font color="red">
+				<%= message %>
+				<p>
+					<% } %>
+	</div>
+	</header>
+</body>
+</html>

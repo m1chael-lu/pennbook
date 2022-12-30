@@ -1,0 +1,163 @@
+[33mcommit 6b6c4afcdf66da8debf0ca8dad544635a5255679[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Sun Dec 11 22:01:17 2022 +0000
+
+    got chat requests to show from the other end
+
+[33mcommit 2dcf787d3342d3b34c82db5395c00ebf4ae93489[m
+Merge: 2e68530 8da0971
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Sun Dec 11 19:59:02 2022 +0000
+
+    Merge branch 'master' of ssh://git.nets2120.cloud/git/nets2120/G38
+
+[33mcommit 2e685305de22703c008318a6d0feff6c5b8bf653[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Sun Dec 11 19:56:08 2022 +0000
+
+    working on chat requests sending
+
+[33mcommit 8da0971026348af8e18308ddc2b3e33e904de572[m
+Author: Dee Xie <deex@sas.upenn.edu>
+Date:   Sun Dec 11 19:55:33 2022 +0000
+
+    updateSettings
+
+[33mcommit de634df330889add059ede6106432c309d87ed32[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Sun Dec 11 06:15:58 2022 +0000
+
+    attempting to pass in a hidden field through signup
+
+[33mcommit 3839b479893de9beefe3137a86ad86049528dbbe[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Sun Dec 11 04:14:24 2022 +0000
+
+    chatbox updates
+
+[33mcommit 492805a34c6154268297165fd92aa2cdf27b4f13[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Sun Dec 11 04:02:09 2022 +0000
+
+    made the chatboxes draggable
+
+[33mcommit 13b01298e386edafa0582ccf4b286a9a6e078adb[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Sun Dec 11 03:39:35 2022 +0000
+
+    got the chat request boxes looking cooler
+
+[33mcommit 96c1ae46a8f9d0c4ac9d2f9f3898be79338ef223[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Sun Dec 11 00:31:05 2022 +0000
+
+    chat request window
+
+[33mcommit 2cd8f3dd09a54757ed1b6564c223eade29c5b0b8[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Thu Dec 8 02:27:09 2022 +0000
+
+    attempting to change form to ajax calls
+
+[33mcommit 6eb37ef0b32d5bcad7f3d9032a00974463fae345[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Thu Dec 8 02:03:34 2022 +0000
+
+    finished making the friend request backend
+
+[33mcommit 741de3d4fbd5b7a75f34b4c18cf02a04992dc1a6[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Thu Dec 8 00:55:07 2022 +0000
+
+    changed main.ejs to login.ejs
+
+[33mcommit 1395efa6e5cae32f0af747e98afd90762f57c4f0[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Thu Dec 8 00:52:27 2022 +0000
+
+    fixed signup
+
+[33mcommit 48560b7f6ac587fda918d7693923dd3c152f4def[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Tue Dec 6 05:26:08 2022 +0000
+
+    added hashed passwords
+
+[33mcommit 45e8d8b96a64f2b7d4fc8b226fb6ccdb05453a66[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Tue Dec 6 05:06:08 2022 +0000
+
+    added search bar
+
+[33mcommit ee57ed52006c0475afa288d237eb1a504b778230[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Tue Dec 6 04:44:10 2022 +0000
+
+    added acc settings and signup page
+
+[33mcommit f6ecc8c135e6c80e21a10b2bcc28d3b0cf437a2d[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Thu Dec 1 08:14:17 2022 +0000
+
+    Changed name and logo
+
+[33mcommit ea792010a08e3c2b4892cb16ee30059105bd107c[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Thu Dec 1 08:11:26 2022 +0000
+
+    sectioned home page and listed friends
+
+[33mcommit 9353a969d02e9206d5fef139c22b41356053e844[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Wed Nov 30 19:41:13 2022 +0000
+
+    changed routes
+
+[33mcommit 13b52b2f2cc0040028ef3cf8fc6568c3a75d0980[m
+Author: Dee Xie <deex@sas.upenn.edu>
+Date:   Wed Nov 30 05:50:47 2022 +0000
+
+    fix typo in signup.ejs
+
+[33mcommit 7648b323a85177e7090947ee26d863054a9f6fd4[m
+Merge: f7cc5e1 f1f0eb3
+Author: Dee Xie <deex@sas.upenn.edu>
+Date:   Wed Nov 30 05:47:25 2022 +0000
+
+    Merge branch 'master' of ssh://git.nets2120.cloud/git/nets2120/G38
+
+[33mcommit f7cc5e1daf67cac7c4ee8e53a6778298cab976ec[m
+Author: Dee Xie <deex@sas.upenn.edu>
+Date:   Wed Nov 30 05:46:59 2022 +0000
+
+    signup database done
+
+[33mcommit f1f0eb3d1a10f01139479535e0587cbd89187a21[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Wed Nov 30 05:44:57 2022 +0000
+
+    added friend functionality
+
+[33mcommit 36e85bc72c53066e60f67c4d54668bc1f20385e1[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Wed Nov 30 05:21:38 2022 +0000
+
+    updated signup page
+
+[33mcommit bb2daa65886ec51ca08f6a210bc329fc3f366314[m
+Author: Dee Xie <deex@sas.upenn.edu>
+Date:   Wed Nov 30 05:14:13 2022 +0000
+
+    new-database.js
+
+[33mcommit 863f4d2ab7e3102cc562a5b67dfccdb86defb192[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Wed Nov 30 05:06:19 2022 +0000
+
+    facebook logo added
+
+[33mcommit 46dd417b2537d4995dd5d418dcc663db91b63195[m
+Author: Michael Lu <lumich@wharton.upenn.edu>
+Date:   Wed Nov 30 04:34:32 2022 +0000
+
+    HW4 copy

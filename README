@@ -1,0 +1,40 @@
+1) the full names and SEAS login names of all team members 
+Michael Lu - lumich
+Dee Xie - deex
+Vikramaditya Dugar - vdugar
+Ronak Bhatia - ronakb
+
+2) a description of features
+implemented
+
+* Chat - messaging capabilities
+* Friends - Ability to add friends, see who's online, unfriend, and a visualizer to see a network of friends
+* Posts - Ability to create status updates and see new friendships and account updates
+* News - On Homepage, we display a list of articles from the article database
+* Account Settings - Able to change affiliation, interests, email, and password
+* Signup - Able to make new accounts into the system
+* Live refresh - Auto refreshes indicators, posts...
+* Dragging - Used modals to allow for dragging windows
+
+
+3) any extra credit claimed 
+
+* Dragging (described above)
+
+4) a list of source files included 
+
+* Public - file with CSS and other scripts
+* views - EJS views
+* app.js - main backend scripts
+* routes - main routes
+* models - main database funcitons
+
+5) a declaration that all of
+the code you are submitting was written by you, and 
+
+Yes, all our code was written by our group. 
+
+6) instructions for building an running your
+project. The instructions must be sufficiently detailed for us to set up and run your application.
+
+* npm install should be sufficient and adding all the database schemas used. 

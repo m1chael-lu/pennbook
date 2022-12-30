@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Main Page</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Overpass">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter">
+	<link rel="stylesheet" href="/styles/login.css" type="text/css">
+</head>
+
+<body>
+	<nav class="navbar"> 
+		<div class="container">
+			<div class="title">
+				<a href="/login">PENNBook</a>
+			</div>
+		</div>
+	</nav>
+	<header class="header">
+		<div class="center">
+			<h1 style = "font-size: 26px;">Login</h1>
+			<form action="/checkLogin" method="post">
+				<div class="txt_field">
+					<input type="text" name="username" required>
+					<span></span>
+					<label>Username</label>
+				</div>
+				<div class="txt_field">
+					<input type="password" name="password" required>
+					<span></span>
+					<label>Password</label>
+				</div>
+				<input type="submit" value="Login">
+				<div class="signup_link">
+					Not a member? <a href="/signup">Signup</a>
+				</div>
+		</div>
+	</header>
+	<footer> 
+		<div class="container">Creator's Names: Michael, Vikram, Dee, Ronny</div>
+	</footer>		
+</body>
+
+</html>

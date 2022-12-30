@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Overpass">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Overpass">
+<script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Custom styles for this template -->
+<style>
+  body {
+    background: #c4ddee;
+  }
+
+  .form-signin {
+    width: 100%;
+    max-width: 420px;
+    padding: 15px;
+    margin: auto;
+  }
+
+  .form-label {
+    margin-bottom: 15px;
+  }
+
+  .form-signin .form-control {
+    margin-bottom: 10px;
+  }
+
+  .form-box {
+    background-color: #92b7cf;
+    border-radius: 20px;
+    padding: 30px;
+  }
+
+  .form-signin h1 {
+    font-family: "Overpass", sans-serif;
+  }
+
+  .interest-tag {
+    background-color: rgb(195, 221, 229);
+    padding: 5px;
+    margin: 5px;
+    display: inline-block;
+  }
+</style>
+<script>
+  $(document).ready(function () {
+    var interestsInput = document.getElementById("interests");
+    var interestTagsDiv = document.getElementById("interest-tags");
+    var interests = [];
+
+    interestsInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && interestsInput.value.length > 0) {
+        interests.push(interestsInput.value);
+        document.getElementById('listElement').value += (interestsInput.value + ", ")
+
+        var removeButton = document.createElement("button");
+        removeButton.innerText = "x";
+        removeButton.classList.add("btn");
+        removeButton.classList.add("btn-sm");
+
+        removeButton.addEventListener("mousedown", function () {
+          var index = interests.indexOf(this.nextSibling.nodeValue);
+          document.getElementById('listElement').value = document
+            .getElementById('listElement')
+            .value
+            .replace(interests[index] + ", ", "");
+          if (index >= 0) {
+            interests.splice(index, 1);
+          }
+          this.parentNode.parentNode.removeChild(this.parentNode);
+        });
+
+        var interestTagDiv = document.createElement("div");
+        interestTagDiv.classList.add("interest-tag");
+
+        interestTagDiv.appendChild(removeButton);
+        interestTagDiv.appendChild(document.createTextNode(interestsInput.value));
+
+        interestsInput.value = "";
+
+        interestTagsDiv.appendChild(interestTagDiv);
+        var interestTagDiv = document.createElement("div");
+        interestTagDiv.classList.add("interest-tag");
+        changeInterests();
+      }
+    });
+
+    $.post('/getuserinfo', {}, function (data) {
+      if (data.success == true) {
+        // Updating placeholders
+
+        var emailField = document.getElementById("inputEmail");
+        var affiliationField = document.getElementById("inputAffiliation");
+        emailField.value = data.userinfo.email.S;
+        affiliationField.value = data.userinfo.affiliation.S;
+
+        for (let i = 0; i < data.userinfo.Interests.SS.length; i++) {
+          var curr = data.userinfo.Interests.SS[i];
+          interests.push(curr);
+          document.getElementById('listElement').value += (curr + ", ")
+
+          var removeButton = document.createElement("button");
+          removeButton.innerText = "x";
+          removeButton.classList.add("btn");
+          removeButton.classList.add("btn-sm");
+
+          removeButton.addEventListener("mousedown", function () {
+            var index = interests.indexOf(this.nextSibling.nodeValue);
+            document.getElementById('listElement').value = document
+              .getElementById('listElement')
+              .value
+              .replace(interests[index] + ", ", "");
+            if (index >= 0) {
+              interests.splice(index, 1);
+            }
+            this.parentNode.parentNode.removeChild(this.parentNode);
+          });
+
+          var interestTagDiv = document.createElement("div");
+          interestTagDiv.classList.add("interest-tag");
+
+          interestTagDiv.appendChild(removeButton);
+          interestTagDiv.appendChild(document.createTextNode(curr));
+
+          interestTagsDiv.appendChild(interestTagDiv);
+          var interestTagDiv = document.createElement("div");
+          interestTagDiv.classList.add("interest-tag");
+        }
+      }
+    })
+  });
+
+var changeAffiliation = function() {
+  var changes = document.getElementById("changes");
+  changes.value = changes.value.replace("affiliation->false", "affiliation->true");
+}
+
+var changeInterests = function() {
+  var changes = document.getElementById("changes");
+  changes.value = changes.value.replace("interests->false", "interests->true");
+}
+
+</script>
+
+<body id="text" style="background: #c4ddee">
+  <form class="form-signin" action="/updatesettings" method="post" onkeydown="return event.key != 'Enter';">
+    <h1 class="h3 mb-3 font-weight-normal text-center">ACCOUNT SETTINGS</h1>
+    <div class="form-box">
+      <input type="hidden" id="listElement" name="listElement" value="">
+      <input type="hidden" id="changes" name="changes" value="affiliation->false, interests->false">
+      <label class="form-label">Update Email</label>
+      <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Update Email" required>
+      <label class="form-label">Update Password</label>
+      <input type="password" name="password" oninput="" id="inputPassword" class="form-control" placeholder="New Password">
+      <label class="form-label">Update Affiliation</label>
+      <input type="text" onchange="changeAffiliation()" id="inputAffiliation" name="affiliation" class="form-control" placeholder="Update Affiliation"
+        required>
+      <label class="form-label">Update Interests</label>
+      <select class="btn btn-secondary" id="interests" style="background:rgb(50, 87, 124); border-color:rgb(50, 87, 124); padding: 10">
+        <option value="EDUCATION">EDUCATION</option>
+        <option value="CULTURE & ARTS">CULTURE & ARTS</option>
+        <option value="LATINO VOICES">LATINO VOICES</option>
+        <option value="COLLEGE">COLLEGE</option>
+        <option value="ENVIRONMENT">ENVIRONMENT</option>
+        <option value="ARTS & CULTURE">ARTS & CULTURE</option>
+        <option value="GOOD NEWS">GOOD NEWS</option>
+        <option value="FIFTY">FIFTY</option>
+        <option value="ARTS">ARTS</option>
+        <option value="MONEY">MONEY</option>
+        <option value="TECH">TECH</option>
+        <option value="TASTE">TASTE</option>
+        <option value="WORLD NEWS">WORLD NEWS</option>
+        <option value="SCIENCE">SCIENCE</option>
+        <option value="STYLE">STYLE</option>
+        <option value="RELIGION">RELIGION</option>
+        <option value="WORLDPOST">WORLDPOST</option>
+        <option value="GREEN">GREEN</option>
+        <option value="WEIRD NEWS">WEIRD NEWS</option>
+        <option value="MEDIA">MEDIA</option>
+        <option value="CRIME">CRIME</option>
+        <option value="DIVORCE">DIVORCE</option>
+        <option value="IMPACT">IMPACT</option>
+        <option value="WOMEN">WOMEN</option>
+        <option value="WEDDINGS">WEDDINGS</option>
+        <option value="THE WORLDPOST">THE WORLDPOST</option>
+        <option value="PARENTS">PARENTS</option>
+        <option value="HOME & LIVING">HOME & LIVING</option>
+        <option value="BLACK VOICES">BLACK VOICES</option>
+        <option value="SPORTS">SPORTS</option>
+        <option value="COMEDY">COMEDY</option>
+        <option value="BUSINESS">BUSINESS</option>
+        <option value="FOOD & DRINK">FOOD & DRINK</option>
+        <option value="QUEER VOICES">QUEER VOICES</option>
+        <option value="HEALTHY LIVING">HEALTHY LIVING</option>
+        <option value="PARENTING">PARENTING</option>
+        <option value="STYLE & BEAUTY">STYLE & BEAUTY</option>
+        <option value="TRAVEL">TRAVEL</option>
+        <option value="ENTERTAINMENT">ENTERTAINMENT</option>
+        <option value="WELLNESS">WELLNESS</option>
+        <option value="POLITICS">POLITICS</option>
+        <div id="interest-tags"></div>
+      </select>
+      <form>
+        <input type="text" class="form-control" id="interests" placeholder="Update Interests" name="interests"
+          size="30" hidden="true"><br><br>
+        <div id="interest-tags"></div>
+      </form>
+      <div class="form-box"> <input type="submit" value="Update Settings" class="btn btn-primary"
+          style="background:rgb(50, 87, 124); border-color:rgb(50, 87, 124); margin-left: 45px;"> </div>
+    </div>
+  </form>
+</body>
+
+</html>
