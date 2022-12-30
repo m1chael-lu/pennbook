@@ -1,37 +1,37 @@
-## Pennbook
+# Pennbook
 
+Pennbook is a social networking platform with the following features:
 
-2) a description of features
-implemented
+## Chat
 
-* Chat - messaging capabilities
-* Friends - Ability to add friends, see who's online, unfriend, and a visualizer to see a network of friends
-* Posts - Ability to create status updates and see new friendships and account updates
-* News - On Homepage, we display a list of articles from the article database
-* Account Settings - Able to change affiliation, interests, email, and password
-* Signup - Able to make new accounts into the system
-* Live refresh - Auto refreshes indicators, posts...
-* Dragging - Used modals to allow for dragging windows
+Messaging capabilities
+## Friends
 
+Ability to add friends, see who's online, unfriend, and a visualizer to see a network of friends
+## Posts
 
-3) any extra credit claimed 
+Ability to create status updates and see new friendships and account updates
+## News
 
-* Dragging (described above)
+On the homepage, we display a list of articles from the article database
+## Account Settings
 
-4) a list of source files included 
+Ability to change affiliation, interests, email, and password
+## Signup
 
-* Public - file with CSS and other scripts
-* views - EJS views
-* app.js - main backend scripts
-* routes - main routes
-* models - main database funcitons
+Ability to create new accounts within the system
+## Live Refresh
 
-5) a declaration that all of
-the code you are submitting was written by you, and 
+Auto refreshes indicators, posts, and other elements on the page
+## Dragging
 
-Yes, all our code was written by our group. 
+Use of modals to allow for dragging windows
+## Instructions for Building and Running the Project
 
-6) instructions for building an running your
-project. The instructions must be sufficiently detailed for us to set up and run your application.
+1. Clone the repository to your local machine
+2. Run npm install to install all necessary dependencies
+3. Set up the database by adding the necessary schemas
+4. Run the project using npm start
+5. Note: Make sure you have Node.js and npm installed on your machine.
 
-* npm install should be sufficient and adding all the database schemas used. 
+We hope you enjoy using Pennbook!
